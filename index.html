@@ -17,6 +17,7 @@
     <h1>Welcome to the Morning Routine Game!</h1>
     <p>Help us put the morning steps in the correct order!</p>
     <button onclick="showGame()">Next</button>
+    <br><br><p><h3>Made by:</h3>  Samaa Elsayed - Farah Mosaad - Mostafa Mahmoud</p>
   </div>
 
   <div id="game" style="margin-top: 250px;">
@@ -115,7 +116,7 @@
       document.getElementById("game").style.display = "block";
       // Reset tiles
       const tilesContainer = document.getElementById("tiles");
-      ["brush", "face", "dress", "eat"].forEach(id => {
+      ["eat", "brush", "dress", "face"].forEach(id => {
         const tile = document.getElementById(id);
         if (tile) tilesContainer.appendChild(tile);
       });
