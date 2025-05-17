@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,100..900;1,100..900&display=swap"
+    rel="stylesheet">
+  <title>Morning Routine Game</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <div id="intro">
+    <h1>Welcome to the Morning Routine Game!</h1>
+    <p>Help us put the morning steps in the correct order!</p>
+    <button onclick="showGame()">Next</button>
+  </div>
+
+  <div id="game" style="margin-top: 250px;">
+    <h2>Drag and drop the steps in the correct order</h2>
+    <div class="game-container">
+
+      <div class="tiles" id="tiles">
+        <div class="tile" draggable="true" ondragstart="drag(event)" id="eat">
+          <img src="./Pictures and sounds/eat-breakfast.png" alt="Eat Breakfast">
+        </div>
+        <div class="tile" draggable="true" ondragstart="drag(event)" id="brush">
+          <img src="./Pictures and sounds/brush-teeth.png" alt="Brush Teeth">
+        </div>
+        <div class="tile" draggable="true" ondragstart="drag(event)" id="dress">
+          <img src="./Pictures and sounds/wear-clothe.png" alt="Get Dressed">
+        </div>
+        <div class="tile" draggable="true" ondragstart="drag(event)" id="face">
+          <img src="./Pictures and sounds/wash-face.png" alt="Wash Face">
+        </div>
+      </div>
+
+      <div class="order" id="order">
+        <div class="dropzone" ondrop="drop(event)" ondragover="allowDrop(event)"><span>Step 1</span></div>
+        <div class="dropzone" ondrop="drop(event)" ondragover="allowDrop(event)"><span>Step 2</span></div>
+        <div class="dropzone" ondrop="drop(event)" ondragover="allowDrop(event)"><span>Step 3</span></div>
+        <div class="dropzone" ondrop="drop(event)" ondragover="allowDrop(event)"><span>Step 4</span></div>
+      </div>
+
+    </div>
+    <button onclick="checkOrder()">Check Answer</button>
+  </div>
+
+  <div id="success">
+    <h2 class="fireworks">🎆🎉 Good Job! 🎉🎆</h2>
+    <audio id="cheer-sound">
+      <source src="./Pictures and sounds/Clapping.wav" type="audio/mpeg">
+    </audio>
+    <button onclick="restart()">Restart</button>
+  </div>
+
+  <div id="fail">
+    <h2>Almost there! Try Again!</h2>
+    <button onclick="retry()">Try Again</button>
+  </div>
+
+
+  <script>
+    document.getElementById("intro").style.display = "block";
+
+    function showGame() {
+      document.getElementById("intro").style.display = "none";
+      document.getElementById("game").style.display = "block";
+    }
+
+    function allowDrop(ev) {
+      ev.preventDefault();
+    }
+
+    function drag(ev) {
+      ev.dataTransfer.setData("text", ev.target.id);
+    }
+
+    function drop(ev) {
+      ev.preventDefault();
+      const dropzone = ev.target.closest('.dropzone');
+      if (!dropzone) return;
+      if (dropzone.children.length < 2) {
+        const data = ev.dataTransfer.getData("text");
+        const dragged = document.getElementById(data);
+        dropzone.appendChild(dragged);
+      }
+    }
+
+    function checkOrder() {
+      const expected = ["brush", "face", "dress", "eat"];
+      const zones = document.querySelectorAll(".dropzone");
+      let correct = true;
+      zones.forEach((zone, i) => {
+        const placed = zone.children[1];
+        if (!placed || placed.id !== expected[i]) correct = false;
+      });
+      document.getElementById("game").style.display = "none";
+      if (correct) {
+        document.getElementById("success").style.display = "block";
+        document.getElementById("cheer-sound").play();
+        createFireworks();
+      } else {
+        document.getElementById("fail").style.display = "block";
+      }
+    }
+
+    function restart() { location.reload(); }
+
+    function retry() {
+      document.getElementById("fail").style.display = "none";
+      document.getElementById("game").style.display = "block";
+      // Reset tiles
+      const tilesContainer = document.getElementById("tiles");
+      ["brush", "face", "dress", "eat"].forEach(id => {
+        const tile = document.getElementById(id);
+        if (tile) tilesContainer.appendChild(tile);
+      });
+      // Clear dropzones
+      document.querySelectorAll(".dropzone").forEach(zone => {
+        while (zone.children.length > 1) zone.removeChild(zone.lastChild);
+      });
+    }
+
+    function createFireworks() {
+      const fw = document.createElement('div');
+      fw.innerHTML = "🎇✨🎉🎊✨🎇";
+      fw.style.fontSize = '60px';
+      fw.style.marginTop = '20px';
+      document.getElementById("success").appendChild(fw);
+    }
+  </script>
+</body>
+
+</html>
